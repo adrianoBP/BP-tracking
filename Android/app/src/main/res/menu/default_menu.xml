@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/iAddTemp"
+        android:icon="@drawable/ic_more_vertical"
+        app:showAsAction="always"
+        android:title="Notitle">
+        <menu>
+            <item
+                android:id="@+id/iAddEntry"
+                android:icon="@drawable/ic_add"
+                android:title="Add entry"
+                app:showAsAction="ifRoom"
+                />
+            <item
+                android:id="@+id/iGraph"
+                android:icon="@drawable/ic_graph"
+                android:title="Graph"
+                app:showAsAction="ifRoom"
+                />
+        </menu>
+
+    </item>
+
+</menu>

@@ -2,7 +2,9 @@ package pressure.adriano.com;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -24,5 +26,11 @@ public class Util {
                 })
                 .setActionTextColor(((Activity)context).getResources().getColor(android.R.color.holo_red_light))
                 .show();
+    }
+
+    static void Init(Toolbar toolbar, Context context){
+        // Override default toolbar icon
+//        Drawable drawable =  context.getDrawable(R.mipmap.ic_add);
+//        toolbar.setOverflowIcon(drawable);
     }
 }
