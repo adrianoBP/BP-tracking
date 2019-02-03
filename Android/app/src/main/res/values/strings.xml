@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Pressure</string>
+    <string name="APIEndpoint">https://projectsherlock.ddns.net/projects/BloodPressureMonitoring/api</string>
 </resources>
