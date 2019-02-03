@@ -1,8 +1,7 @@
-package pressure.adriano.com;
+package pressure.adriano.com.Helpers;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -17,7 +16,8 @@ public class Util {
         }
     }
 
-    public static void CreateBasicSnack(String message, Context context){
+    public static void CreateBasicSnack(String message, Integer length, Context context){
+        length = length != null ? length : 3000;
         Snackbar.make(((Activity)context).findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)
                 .setAction("CLOSE", new View.OnClickListener() {
                     @Override

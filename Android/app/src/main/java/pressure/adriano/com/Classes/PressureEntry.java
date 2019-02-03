@@ -1,13 +1,12 @@
-package pressure.adriano.com;
+package pressure.adriano.com.Classes;
 
-import java.text.DateFormat;
 import java.util.Date;
 
 public class PressureEntry {
 
     private String id;
-    private String systole;
-    private String diastole;
+    private Integer systole;
+    private Integer diastole;
     private Date createTime;
 
 
@@ -19,19 +18,19 @@ public class PressureEntry {
         this.id = id;
     }
 
-    public String getSystole() {
+    public Integer getSystole() {
         return systole;
     }
 
-    public void setSystole(String systole) {
+    public void setSystole(Integer systole) {
         this.systole = systole;
     }
 
-    public String getDiastole() {
+    public Integer getDiastole() {
         return diastole;
     }
 
-    public void setDiastole(String diastole) {
+    public void setDiastole(Integer diastole) {
         this.diastole = diastole;
     }
 
@@ -43,7 +42,7 @@ public class PressureEntry {
         this.createTime = createTime;
     }
 
-    public PressureEntry(String id, String systole, String diastole, Date createTime){
+    public PressureEntry(String id, Integer systole, Integer diastole, Date createTime){
         setId(id);
         setSystole(systole);
         setDiastole(diastole);

@@ -1,10 +1,12 @@
 
+// TODO: token / Revoke token
+
 // DOM values
 var mainContainer = document.getElementById("container");
 var canvasGraph = document.createElement("canvas");
 canvasGraph.className += "mainCanvas";
 
-var myChart = new Chart(canvasGraph, {
+var myChart = new Chart(canvasGraph.getContext('2d'), {
     type: 'line',
     data: {
     },
@@ -28,13 +30,14 @@ window.setInterval(function(){
 Init();
 
 function UpdateChart(sysVals, diaVals, dataLabels){
+    if(myChart){ myChart.destroy(); }
     myChart = new Chart(canvasGraph, {
         type: 'line',
         data: {
             labels: dataLabels,
             datasets: [
                 {
-                    label: "Systole data",
+                    label: "Systolic",
                     fill: false,
                     backgroundColor: "#b71c1c",
                     borderColor: "#b71c1c",
@@ -54,7 +57,7 @@ function UpdateChart(sysVals, diaVals, dataLabels){
                     data: sysVals
                 },
                 {
-                    label: "Diastole data",
+                    label: "Diastolic",
                     fill: false,
                     backgroundColor: "#283593",
                     bezierCurve : true,

@@ -10,4 +10,6 @@
     <color name="textLight">#DFDFDF</color>
     <color name="backgroundLight">#EEEEEE</color>
     <color name="backgroundDark">#424242</color>
+    <color name="systolicColor">#b71c1c</color>
+    <color name="diastolicColor">#283593</color>
 </resources>
