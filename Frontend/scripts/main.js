@@ -101,9 +101,9 @@ function Init(){
 function GetPressureData(){
 
     $.ajax({
-      type: "GET",
-      url: "https://projectsherlock.ddns.net/projects/BloodPressureMonitoring/api/GetMeasurements.php",
-      data: {},
+      type: "POST",
+      url: "https://projectsherlock.ddns.net/projects/BloodPressureMonitoring/BackEnd/api/GetMeasurements.php",
+      data: JSON.stringify({"token":"5B74E1CF-6B1D-4C31-8A4C-ED0DC1E5E017"}),
       dataType: "json",
       success: function(response) {
         if (!response["Error"]) {

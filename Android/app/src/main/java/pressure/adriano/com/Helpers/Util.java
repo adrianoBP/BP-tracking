@@ -7,6 +7,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import java.util.List;
+
 public class Util {
 
     public static void HideKeyboard(View view, Context context){
@@ -32,5 +34,21 @@ public class Util {
         // Override default toolbar icon
 //        Drawable drawable =  context.getDrawable(R.mipmap.ic_add);
 //        toolbar.setOverflowIcon(drawable);
+    }
+
+    public static Integer CalculateAverage(String field){
+
+        String[] values = field.split(",");
+        Integer average = 0, counter = values.length;
+
+        for (String value: values) {
+            if(!value.isEmpty())
+                average += Integer.parseInt(value.trim());
+            else
+                counter--;
+        }
+
+        return average / counter;
+
     }
 }

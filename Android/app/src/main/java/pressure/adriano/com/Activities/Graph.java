@@ -102,9 +102,9 @@ public class Graph extends AppCompatActivity {
             @Override
             public void onValueSelected(int i, int i1, PointValue pointValue) {
                 if(i == 0){
-                    CreateBasicSnack("Systolic - " + String.valueOf(pressureEntries.get(i1).getSystole()) + " at " + viewDatetimeFormat.format(pressureEntries.get(i1).getCreateTime()), 5000, context);
+                    CreateBasicSnack("Systolic - " + String.valueOf(pressureEntries.get(i1).getSystole()) + " at " + viewDatetimeFormat.format(pressureEntries.get(i1).getCreateTime()) + " " + pressureEntries.get(i).getBpm() + " at BPM", 5000, context);
                 }else{
-                    CreateBasicSnack("Diastolic - " + String.valueOf(pressureEntries.get(i1).getDiastole()) + " at " + viewDatetimeFormat.format(pressureEntries.get(i1).getCreateTime()), 5000, context);
+                    CreateBasicSnack("Diastolic - " + String.valueOf(pressureEntries.get(i1).getDiastole()) + " at " + viewDatetimeFormat.format(pressureEntries.get(i1).getCreateTime()) + " " + pressureEntries.get(i).getBpm() + " at BPM", 5000, context);
                 }
             }
 

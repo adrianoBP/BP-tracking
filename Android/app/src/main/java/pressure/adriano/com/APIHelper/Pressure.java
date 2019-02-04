@@ -32,13 +32,15 @@ import static pressure.adriano.com.Helpers.Util.CreateBasicSnack;
 
 public class Pressure {
 
-    public static void SendPressureData(String systole, String diastole, final Context context){
+    public static void SendPressureData(PressureEntry pressureEntry, final Context context){
 
         final String logLocation = "API.PRESSURE.SEND";
 
         Map<String, String> data = new HashMap<>();
-        data.put("systole", systole);
-        data.put("diastole", diastole);
+        data.put("systole", pressureEntry.getSystole().toString());
+        data.put("diastole", pressureEntry.getDiastole().toString());
+        data.put("bpm", pressureEntry.getBpm().toString());
+        data.put("token", context.getResources().getString(R.string.temporaryToken));
 
         String url = context.getString(R.string.APIEndpoint) + "/AddMeasurement.php";
 
@@ -95,7 +97,10 @@ public class Pressure {
 
         String url = context.getString(R.string.APIEndpoint) + "/GetMeasurements.php";
 
-        JsonObjectRequest getDataRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+        Map<String, String> data = new HashMap<>();
+        data.put("token", context.getResources().getString(R.string.temporaryToken));
+
+        JsonObjectRequest getDataRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -118,6 +123,7 @@ public class Pressure {
                                             pressureOBJ.getString("id"),
                                             pressureOBJ.getInt("systole"),
                                             pressureOBJ.getInt("diastole"),
+                                            pressureOBJ.getInt("bpm"),
                                             responseDateFormat.parse(pressureOBJ.getString("createTime"))
                                     );
                                     pressureEntries.add(pressureEntry);

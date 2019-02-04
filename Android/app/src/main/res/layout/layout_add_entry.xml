@@ -7,41 +7,38 @@
     android:background="@color/backgroundLight">
 
     <EditText
-        android:id="@+id/etDiastole"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:ems="10"
-        android:inputType="number"
-        app:layout_constraintEnd_toEndOf="@+id/etSystole"
-        app:layout_constraintTop_toBottomOf="@+id/etSystole" />
-
-    <Button
-        android:id="@+id/bSendData"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="32dp"
-        android:background="@color/colorPrimary"
-        android:text="Send"
-        android:textColor="@color/textLight"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/etDiastole"
-        app:layout_constraintStart_toStartOf="@+id/etDiastole"
-        app:layout_constraintTop_toBottomOf="@+id/etDiastole" />
-
-    <EditText
         android:id="@+id/etSystole"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="128dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
-        android:inputType="number"
+        android:inputType="numberDecimal"
+        android:digits="0123456789, "
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etDiastole"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:ems="10"
+        android:inputType="numberDecimal"
+        android:digits="0123456789, "
+        app:layout_constraintEnd_toEndOf="@+id/etSystole"
+        app:layout_constraintTop_toBottomOf="@+id/etSystole" />
+
+    <EditText
+        android:id="@+id/etBpm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:ems="10"
+        android:inputType="numberDecimal"
+        android:digits="0123456789, "
+        app:layout_constraintEnd_toEndOf="@+id/etSystole"
+        app:layout_constraintTop_toBottomOf="@+id/etDiastole" />
 
     <TextView
         android:id="@+id/tvSystole"
@@ -51,9 +48,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:gravity="center_vertical|right"
+        android:gravity="center_vertical|start"
         android:text="Systole"
-        android:textAlignment="textStart"
         android:textAllCaps="false"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/etSystole"
@@ -67,9 +63,8 @@
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:gravity="center_vertical|right"
+        android:gravity="center_vertical|start"
         android:text="Diastole"
-        android:textAlignment="textStart"
         android:textAllCaps="false"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/etDiastole"
@@ -77,5 +72,37 @@
         app:layout_constraintStart_toStartOf="@+id/tvSystole"
         app:layout_constraintTop_toTopOf="@+id/etDiastole"
         app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/tvBpm"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center_vertical|start"
+        android:text="Bpm"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/etBpm"
+        app:layout_constraintEnd_toStartOf="@+id/etSystole"
+        app:layout_constraintStart_toStartOf="@+id/tvSystole"
+        app:layout_constraintTop_toTopOf="@+id/etBpm"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/bSendData"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="32dp"
+        android:background="@color/colorPrimary"
+        android:text="Send"
+        android:textColor="@color/textLight"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/etBpm"
+        app:layout_constraintStart_toStartOf="@+id/etDiastole"
+        app:layout_constraintTop_toBottomOf="@+id/etBpm" />
 
 </android.support.constraint.ConstraintLayout>

@@ -7,6 +7,7 @@ public class PressureEntry {
     private String id;
     private Integer systole;
     private Integer diastole;
+    private Integer bpm;
     private Date createTime;
 
 
@@ -34,6 +35,14 @@ public class PressureEntry {
         this.diastole = diastole;
     }
 
+    public Integer getBpm() {
+        return bpm;
+    }
+
+    public void setBpm(Integer bpm) {
+        this.bpm = bpm;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -42,10 +51,11 @@ public class PressureEntry {
         this.createTime = createTime;
     }
 
-    public PressureEntry(String id, Integer systole, Integer diastole, Date createTime){
+    public PressureEntry(String id, Integer systole, Integer diastole, Integer bpm, Date createTime){
         setId(id);
         setSystole(systole);
         setDiastole(diastole);
+        setBpm(bpm);
         setCreateTime(createTime);
     }
 
