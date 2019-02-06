@@ -20,8 +20,7 @@ if(sizeof($request) == 0){
 }else{
     $authorizationToken = $request["token"];
 
-    if(ValidateToken($authorizationToken)){
-
+    if(ValidateAuthorization($authorizationToken)){
 
         $db = NewDBConnection();
         $statement = $db->prepare("

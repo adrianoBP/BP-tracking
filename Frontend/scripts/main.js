@@ -1,10 +1,16 @@
 
 // TODO: token / Revoke token
+// TODO: handle new user
 
 // DOM values
 var mainContainer = document.getElementById("container");
 var canvasGraph = document.createElement("canvas");
 canvasGraph.className += "mainCanvas";
+
+var googleId = "";
+var googleEmail = "";
+var googleName = "";
+var googleImageURL = "";
 
 var myChart = new Chart(canvasGraph.getContext('2d'), {
     type: 'line',
@@ -22,12 +28,79 @@ var myChart = new Chart(canvasGraph.getContext('2d'), {
     }
 });
 
-// looping functions
+// looping function
 window.setInterval(function(){
-    GetPressureData();
+    if(ReadCookie("authorizationToken")){
+        console.log("From interval.");
+        GetPressureData();
+    }
 }, 3000);
 
-Init();
+// Google Sign in
+function onSignIn(googleUser) {
+
+    var profile = googleUser.getBasicProfile();
+    // console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+    // console.log('Name: ' + profile.getName());
+    // console.log('Image URL: ' + profile.getImageUrl());
+    // console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+
+    let latestToken = ReadCookie("authorizationToken");
+    if(!latestToken){
+        GoogleAuthentication(profile.getId());
+    }else{
+
+    }
+
+    Init();
+}
+
+function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+        $.ajax({
+            type: "POST",
+            url: "https://projectsherlock.ddns.net/projects/BloodPressureMonitoring/BackEnd/api/Logout.php",
+            data: JSON.stringify({"token":ReadCookie("authorizationToken")}),
+            dataType: "json",
+            success: function(response) {
+                RemoveCookie("authorizationToken");
+                location.reload();
+            },
+            error: function() {
+                ShowSnack("Error");
+            }
+        });
+    });
+}
+
+var signinChanged = function (val) {
+    if(!val){
+        ShowSnack("LOGGED OUT.");
+    }
+};
+
+// General Functions
+function GoogleAuthentication(googleId){
+    $.ajax({
+        type: "POST",
+        url: "https://projectsherlock.ddns.net/projects/BloodPressureMonitoring/BackEnd/api/GoogleAuthorization.php",
+        data: JSON.stringify({"googleId":googleId}),
+        dataType: "json",
+        success: function(response) {
+            if (!response["Error"]) {
+                WriteCookie("authorizationToken", response["token"]);
+                ShowSnack("Authenticated via Google!");
+                GetPressureData();
+            } else {
+                ShowSnack(response["Error"]);
+            }
+      },
+        error: function() {
+            ShowSnack("Error");
+        }
+    });
+}
 
 function UpdateChart(sysVals, diaVals, dataLabels){
     if(myChart){ myChart.destroy(); }
@@ -93,22 +166,22 @@ function UpdateChart(sysVals, diaVals, dataLabels){
 }
 
 function Init(){
-    localStorage.clear();
-    GetPressureData();
+    sessionStorage.clear();
+    gapi.auth2.getAuthInstance().isSignedIn.listen(signinChanged);
     mainContainer.appendChild(canvasGraph);
 }
 
 function GetPressureData(){
-
+// "5B74E1CF-6B1D-4C31-8A4C-ED0DC1E5E017"
     $.ajax({
       type: "POST",
       url: "https://projectsherlock.ddns.net/projects/BloodPressureMonitoring/BackEnd/api/GetMeasurements.php",
-      data: JSON.stringify({"token":"5B74E1CF-6B1D-4C31-8A4C-ED0DC1E5E017"}),
+      data: JSON.stringify({"token":ReadCookie("authorizationToken")}),
       dataType: "json",
       success: function(response) {
         if (!response["Error"]) {
 
-            if(response['Data'].length != localStorage.getItem('lastValsCount')){
+            if(response['Data'].length != sessionStorage.getItem('lastValsCount')){
 
                 let sysData = [];
                 let diaData = [];
@@ -121,7 +194,7 @@ function GetPressureData(){
                 });
 
                 UpdateChart(sysData, diaData, dataLabels);
-                localStorage.setItem('lastValsCount', response['Data'].length);
+                sessionStorage.setItem('lastValsCount', response['Data'].length);
             }
 
         } else {
@@ -135,14 +208,14 @@ function GetPressureData(){
 }
 
 function ShowSnack(message) {
-    if(localStorage.getItem('lastMessage') != message){
+    if(sessionStorage.getItem('lastMessage') != message){
         var x = document.getElementById("snackbar");
         x.innerHTML = message;
         x.className = "show";
             setTimeout(function() {
         x.className = x.className.replace("show", "");
         }, 3000);
-        localStorage.setItem('lastMessage', message);
+        sessionStorage.setItem('lastMessage', message);
     }
 }
 

@@ -15,6 +15,8 @@ import java.util.List;
 
 import pressure.adriano.com.R;
 
+import static pressure.adriano.com.APIHelper.Authorization.Logout;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -59,6 +61,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.iGraph:
                 new Graph(this, vGraph);
                 changeView(vGraph);
+                return true;
+            case R.id.iLogout:
+                Logout(this);
+                return true;
             default:
                 return true;
         }

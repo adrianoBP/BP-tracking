@@ -22,25 +22,39 @@ if(sizeof($request) == 0){
     $accountEmail = $request["email"];
     $accountPassword = $request["password"];
 
-    $newToken = GUID();
-
+    // Temporary code in order to retrieve the token.
     $db = NewDBConnection();
     $statement = $db->prepare("
-        UPDATE User SET token = ? WHERE ( username = ? OR email = ?) AND password = ?
+        SELECT token FROM User WHERE ( username = ? OR email = ?) AND password = ?
     ");
-    $statement->bind_param('ssss', $newToken, $accountUsername, $accountEmail, $accountPassword);
+    $statement->bind_param('sss', $accountUsername, $accountEmail, $accountPassword);
     if($statement->execute()){
-        $affectedRows = $db->affected_rows;
-        if($affectedRows == 1){
-            $response['token'] = $newToken;
-        }else if($affectedRows == 0){
-            $response["Error"] = "Unable to update the token.";
-        }else{
-            $response["Error"] = "Multiple results when inserting the token.";
-        }
+        $statement->bind_result($token);
+        $statement->fetch();
+        $response["token"] = $token;
     }else{
-        $response["Error"] = "Unable to update the token.";
+        $response["Error"] = "Unable to retrieve the token.";
     }
+    // // The code below creates a new token! DO NOT DELETE!
+    // $newToken = GUID();
+    //
+    // $db = NewDBConnection();
+    // $statement = $db->prepare("
+    //     UPDATE User SET token = ? WHERE ( username = ? OR email = ?) AND password = ?
+    // ");
+    // $statement->bind_param('ssss', $newToken, $accountUsername, $accountEmail, $accountPassword);
+    // if($statement->execute()){
+    //     $affectedRows = $db->affected_rows;
+    //     if($affectedRows == 1){
+    //         $response['token'] = $newToken;
+    //     }else if($affectedRows == 0){
+    //         $response["Error"] = "Unable to update the token.";
+    //     }else{
+    //         $response["Error"] = "Multiple results when inserting the token.";
+    //     }
+    // }else{
+    //     $response["Error"] = "Unable to update the token.";
+    // }
 }
 
 echo(json_encode($response));

@@ -19,21 +19,21 @@ if(sizeof($request) == 0){
     $response["Error"] = "Missing parameters.";
 }else{
     $authorizationToken = $request["token"];
-    $userId = ValidateAuthorization($authorizationToken);
-    if($userId){
 
-        $systole = $request["systole"];
-        $diastole = $request["diastole"];
-        $bpm = $request["bpm"];
+    if(ValidateAuthorization($authorizationToken)){
 
         $db = NewDBConnection();
         $statement = $db->prepare("
-            INSERT INTO measurement (sys, dia, bpm, userId) VALUES (?, ?, ?, ?)
+            DELETE FROM Session WHERE token = ?
         ");
-        $statement->bind_param('ssss', $systole, $diastole, $bpm, $userId);
+        $statement->bind_param('s', $authorizationToken);
         if(!$statement->execute()){
             $response["Error"] = "Unable to insert values.";
         }
+        $statement->store_result();
+        if($db->affected_rows != 1){
+            $response["Error"] = "Unable to log out.";
+        };
     }else{
         $response["Error"] = "Unable to validate the token.";
     }
