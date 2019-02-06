@@ -26,6 +26,7 @@ import static pressure.adriano.com.Activities.LoginActivity.googleSignInClient;
 import static pressure.adriano.com.Helpers.Util.ClearPreference;
 import static pressure.adriano.com.Helpers.Util.CreateBasicSnack;
 import static pressure.adriano.com.Helpers.Util.ReadPreference;
+import static pressure.adriano.com.Helpers.Util.TryLogout;
 import static pressure.adriano.com.Helpers.Util.WritePreference;
 
 public class Authorization {
@@ -64,7 +65,7 @@ public class Authorization {
                         }finally {
                             if(displayError){
                                 CreateBasicSnack("Unable to retrieve the data!", null, context);
-                                googleSignInClient.signOut();
+                                TryLogout();
                             }
                             else {
                                 Intent mainIntent = new Intent(context, MainActivity.class);
@@ -77,7 +78,7 @@ public class Authorization {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        googleSignInClient.signOut();
+                        TryLogout();
                         try {
                             Log.e(logLocation, error.getMessage());
                         }catch (Exception ex){
@@ -106,25 +107,19 @@ public class Authorization {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-
-                        boolean displayError = false;
-
                         try {
                             String error = response.getString("Error");
                             if (!error.equals("null") && !error.equals("")) {
-                                displayError = true;
                                 Log.e(logLocation, error);
                             }else{
                                 ClearPreference(context, "authorizationToken");
                             }
                         }catch (JSONException jex){
-                            displayError = true;
                             Log.e(logLocation, jex.getMessage());
                         }catch (Exception ex){
-                            displayError = true;
                             Log.e(logLocation, ex.getMessage());
                         }finally {
-                            googleSignInClient.signOut();
+                            TryLogout();
                             Intent mainIntent = new Intent(context, LoginActivity.class);
                             ((Activity)context).finish();
                             context.startActivity(mainIntent);
@@ -134,7 +129,7 @@ public class Authorization {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        googleSignInClient.signOut();
+                        TryLogout();
                         try {
                             Log.e(logLocation, error.getMessage());
                         }catch (Exception ex){

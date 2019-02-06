@@ -1,5 +1,7 @@
 package pressure.adriano.com.Activities;
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -63,7 +65,21 @@ public class MainActivity extends AppCompatActivity {
                 changeView(vGraph);
                 return true;
             case R.id.iLogout:
-                Logout(this);
+                new AlertDialog.Builder(this)
+                    .setTitle("Logout")
+                    .setMessage("Do you really want to log out?")
+                    .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Logout(MainActivity.this);
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                        }
+                    })
+                    .setIcon(R.drawable.ic_logout)
+                    .show();
                 return true;
             default:
                 return true;

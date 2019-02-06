@@ -35,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
                 .requestProfile()
                 .requestId()
                 .build();
+
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
         // Link elements
@@ -51,6 +52,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void SignIn(){
+        googleSignInClient.signOut();
         Intent signIntent = googleSignInClient.getSignInIntent();
         startActivityForResult(signIntent, RC_SIGN_IN);
     }

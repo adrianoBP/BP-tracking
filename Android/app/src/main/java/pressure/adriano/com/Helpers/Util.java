@@ -12,6 +12,8 @@ import java.util.List;
 
 import pressure.adriano.com.R;
 
+import static pressure.adriano.com.Activities.LoginActivity.googleSignInClient;
+
 public class Util {
 
     public static void HideKeyboard(View view, Context context){
@@ -77,4 +79,10 @@ public class Util {
         return sharedPreferences.contains(preferenceName);
     }
     //endregion
+
+    public static void TryLogout(){
+        if(googleSignInClient != null){
+            googleSignInClient.signOut();
+        }
+    }
 }
