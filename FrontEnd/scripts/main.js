@@ -1,6 +1,7 @@
 
-// TODO: token / Revoke token
+// TODO: Better layout
 // TODO: handle new user
+// TODO: load Google Image
 
 // DOM values
 var mainContainer = document.getElementById("container");
@@ -28,10 +29,11 @@ var myChart = new Chart(canvasGraph.getContext('2d'), {
     }
 });
 
+Init();
+
 // looping function
 window.setInterval(function(){
     if(ReadCookie("authorizationToken")){
-        console.log("From interval.");
         GetPressureData();
     }
 }, 3000);
@@ -49,13 +51,12 @@ function onSignIn(googleUser) {
     if(!latestToken){
         GoogleAuthentication(profile.getId());
     }else{
-
+        UILogin();
+        GetPressureData();
     }
-
-    Init();
 }
 
-function signOut() {
+function SignOut() {
     var auth2 = gapi.auth2.getAuthInstance();
     auth2.signOut().then(function () {
         $.ajax({
@@ -65,6 +66,7 @@ function signOut() {
             dataType: "json",
             success: function(response) {
                 RemoveCookie("authorizationToken");
+                UILogout();
                 location.reload();
             },
             error: function() {
@@ -74,13 +76,35 @@ function signOut() {
     });
 }
 
-var signinChanged = function (val) {
-    if(!val){
-        ShowSnack("LOGGED OUT.");
-    }
+function StartGAuth() {
+    gapi.load('auth2', function(){
+    auth2 = gapi.auth2.init({
+            client_id: '146276899170-ts6gbrgmlsobn2pugjhont9a4vbo13m0.apps.googleusercontent.com',
+            cookiepolicy: 'single_host_origin',
+        });
+        AttachSignin(document.getElementById('dGoogle'));
+    });
 };
 
-// General Functions
+function AttachSignin(element) {
+    let latestToken = ReadCookie("authorizationToken");
+    if(!latestToken){
+        auth2.attachClickHandler(element, {},
+            function(googleUser) {
+                var profile = googleUser.getBasicProfile();
+                    GoogleAuthentication(profile.getId());
+            }, function(error) {
+                alert(JSON.stringify(error, undefined, 2));
+            }
+        );
+    }else{
+        UILogin();
+        GetPressureData();
+        GoogleInit();
+    }
+}
+
+// External calls
 function GoogleAuthentication(googleId){
     $.ajax({
         type: "POST",
@@ -91,6 +115,8 @@ function GoogleAuthentication(googleId){
             if (!response["Error"]) {
                 WriteCookie("authorizationToken", response["token"]);
                 ShowSnack("Authenticated via Google!");
+                GoogleInit();
+                UILogin();
                 GetPressureData();
             } else {
                 ShowSnack(response["Error"]);
@@ -102,77 +128,7 @@ function GoogleAuthentication(googleId){
     });
 }
 
-function UpdateChart(sysVals, diaVals, dataLabels){
-    if(myChart){ myChart.destroy(); }
-    myChart = new Chart(canvasGraph, {
-        type: 'line',
-        data: {
-            labels: dataLabels,
-            datasets: [
-                {
-                    label: "Systolic",
-                    fill: false,
-                    backgroundColor: "#b71c1c",
-                    borderColor: "#b71c1c",
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    boderDashOffset: 0.0,
-                    borderJoinStyle: 'miter',
-                    pointBorderColor: "#b71c1c",
-                    pointBackgroundColor: "#fff",
-                    pointBorderWidth: 2,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: "#b71c1c",
-                    pointHoverBorderColor: "#fff",
-                    pointHoverBorderWidth: 2,
-                    pointRaduis: 2,
-                    pointHitRadius: 10,
-                    data: sysVals
-                },
-                {
-                    label: "Diastolic",
-                    fill: false,
-                    backgroundColor: "#283593",
-                    bezierCurve : true,
-                    borderColor: "#283593",
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    boderDashOffset: 0.0,
-                    borderJoinStyle: 'miter',
-                    pointBorderColor: "#283593",
-                    pointBackgroundColor: "#fff",
-                    pointBorderWidth: 2,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: "#283593",
-                    pointHoverBorderColor: "#fff",
-                    pointHoverBorderWidth: 2,
-                    pointRaduis: 2,
-                    pointHitRadius: 10,
-                    data: diaVals
-                }
-            ]
-        },
-        options: {
-            maintainAspectRatio: false,
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero:true
-                    }
-                }]
-            }
-        }
-    })
-}
-
-function Init(){
-    sessionStorage.clear();
-    gapi.auth2.getAuthInstance().isSignedIn.listen(signinChanged);
-    mainContainer.appendChild(canvasGraph);
-}
-
 function GetPressureData(){
-// "5B74E1CF-6B1D-4C31-8A4C-ED0DC1E5E017"
     $.ajax({
       type: "POST",
       url: "https://projectsherlock.ddns.net/projects/BloodPressureMonitoring/BackEnd/api/GetMeasurements.php",
@@ -207,31 +163,89 @@ function GetPressureData(){
     });
 }
 
-function ShowSnack(message) {
-    if(sessionStorage.getItem('lastMessage') != message){
-        var x = document.getElementById("snackbar");
-        x.innerHTML = message;
-        x.className = "show";
-            setTimeout(function() {
-        x.className = x.className.replace("show", "");
-        }, 3000);
-        sessionStorage.setItem('lastMessage', message);
-    }
+// Internal functions
+function Init(){
+    sessionStorage.clear();
+    UIInit();
+    StartGAuth();
 }
 
-function NormalizeTime(date){
-    let day = date.getDate();
-    let month = date.getMonth();
-    let year = date.getFullYear();
-    let hour = date.getHours();
-    let minute = date.getMinutes();
-    let second = date.getSeconds();
+function GoogleInit(){
+    gapi.auth2.getAuthInstance().isSignedIn.listen(signinChanged);
+    mainContainer.appendChild(canvasGraph);
+}
 
-    if(day<10){day = "0"+day; }
-    if(month<10){month = "0"+month; }
-    if(hour<10){hour = "0"+hour; }
-    if(minute<10){minute = "0"+minute; }
-    if(second<10){second = "0"+second; }
+var signinChanged = function (val) {
+    if(!val){
+        ShowSnack("LOGGED OUT.");
+    }
+};
 
-    return day + "/" +  month + "/" +  year + " " +  hour + ":" +  minute + ":" +  second;
+function UpdateChart(sysVals, diaVals, dataLabels){
+    if(myChart){ myChart.destroy(); }
+    myChart = new Chart(canvasGraph, {
+        type: 'line',
+        data: {
+            labels: dataLabels,
+            datasets: [
+                {
+                    label: "Diastolic",
+                    fill: false,
+                    backgroundColor: "rgba(40, 53, 147, 0.22)",
+                    bezierCurve : true,
+                    borderColor: "#283593",
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    boderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: "#283593",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 2,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "#283593",
+                    pointHoverBorderColor: "#fff",
+                    pointHoverBorderWidth: 2,
+                    pointRaduis: 2,
+                    pointHitRadius: 10,
+                    data: diaVals
+                },
+                {
+                    label: "Systolic",
+                    fill: false, // Change to "-1" in order to fill between lines, change to "start" fill to the axis
+                    backgroundColor: "rgba(119, 119, 119, 0.30)",
+                    borderColor: "#b71c1c",
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    boderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: "#b71c1c",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 2,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "#b71c1c",
+                    pointHoverBorderColor: "#fff",
+                    pointHoverBorderWidth: 2,
+                    pointRaduis: 2,
+                    pointHitRadius: 10,
+                    data: sysVals
+                }
+            ]
+        },
+        options: {
+            maintainAspectRatio: false,
+            spanGaps: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }]
+            },
+            plugins: {
+                filler: {
+                    propagate: false
+                }
+            }
+        }
+    })
 }
