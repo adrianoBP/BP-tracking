@@ -1,7 +1,8 @@
 
-// TODO: Better layout
-// TODO: handle new user
-// TODO: load Google Image
+// TODO-FE: Better layout
+// TODO-FE: load Google Image
+// TODO-FE/BE: handle new user
+// TODO-BE: token TTL
 
 // DOM values
 var mainContainer = document.getElementById("container");
