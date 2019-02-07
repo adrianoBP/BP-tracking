@@ -27,14 +27,15 @@ import java.util.List;
 import java.util.Map;
 
 import pressure.adriano.com.Activities.Graph;
+import pressure.adriano.com.Activities.LoginActivity;
 import pressure.adriano.com.Activities.MainActivity;
 import pressure.adriano.com.Classes.PressureEntry;
+import pressure.adriano.com.Helpers.Util;
 import pressure.adriano.com.R;
 
-import static pressure.adriano.com.Activities.LoginActivity.googleSignInClient;
 import static pressure.adriano.com.Helpers.Util.CreateBasicSnack;
 import static pressure.adriano.com.Helpers.Util.ReadPreference;
-import static pressure.adriano.com.Helpers.Util.WritePreference;
+import static pressure.adriano.com.Helpers.Util.StartMainActivity;
 
 public class Pressure {
 
@@ -176,5 +177,66 @@ public class Pressure {
         requestQueue.add(getDataRequest);
 
     }
+
+    public static void ValidateToken(final Context context, final boolean startActivity){
+
+        final String logLocation = "API.PRESSURE.VALIDATE";
+
+        String url = context.getString(R.string.APIEndpoint) + "/ValidateToken.php";
+
+        Map<String, String> data = new HashMap<>();
+        data.put("token", ReadPreference(context, "authorizationToken"));
+
+        JsonObjectRequest getDataRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        boolean displayError = false;
+
+                        try {
+                            String error = response.getString("Error");
+                            if (!error.equals("null") && !error.equals("")) {
+
+                                Intent loginIntent = new Intent(context, LoginActivity.class);
+//                                ((Activity)context).finish();
+                                context.startActivity(loginIntent);
+
+                            }else{
+                                if(startActivity) {
+                                    StartMainActivity(context);
+                                }
+                            }
+                        }catch (JSONException jex){
+                            displayError = true;
+                            Log.e(logLocation, "JEX - " + jex.getMessage());
+                        }catch (Exception ex){
+                            displayError = true;
+                            Log.e(logLocation, ex.getMessage());
+                        }finally {
+                            if(displayError){ CreateBasicSnack("Unable to retrieve the data!", null, context); }
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        try {
+                            Log.e(logLocation, error.getMessage());
+                        }catch (Exception ex){
+                            Log.e(logLocation, "Unable to display the error response - " + ex.getMessage());
+                        }finally {
+                            CreateBasicSnack("Unable to retrieve the data!", null, context);
+                        }
+                    }
+                }
+        );
+
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(getDataRequest);
+
+    }
+
+
 
 }

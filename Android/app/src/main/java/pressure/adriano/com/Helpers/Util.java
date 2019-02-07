@@ -2,19 +2,40 @@ package pressure.adriano.com.Helpers;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
 
-import java.util.List;
-
+import pressure.adriano.com.Activities.LoginActivity;
+import pressure.adriano.com.Activities.MainActivity;
 import pressure.adriano.com.R;
 
 import static pressure.adriano.com.Activities.LoginActivity.googleSignInClient;
 
 public class Util {
+
+    public enum Activities{
+        LOGIN,
+        ADDENTRY,
+        GRAPH
+    }
+
+    public enum CallbackTypes{
+        NONE,
+        HOME,
+        LOGIN
+    }
+
+    public static void Init(Context context){
+        if(!CheckPreference(context, "startActivity")){
+            WritePreference(context, "startActivity", CallbackTypes.NONE.toString());
+        }
+    }
 
     public static void HideKeyboard(View view, Context context){
         if(view != null){
@@ -35,11 +56,11 @@ public class Util {
                 .show();
     }
 
-    static void Init(Toolbar toolbar, Context context){
-        // Override default toolbar icon
+//    static void Init(Toolbar toolbar, Context context){
+//        Override default toolbar icon
 //        Drawable drawable =  context.getDrawable(R.mipmap.ic_add);
 //        toolbar.setOverflowIcon(drawable);
-    }
+//    }
 
     public static Integer CalculateAverage(String field){
 
@@ -85,4 +106,26 @@ public class Util {
             googleSignInClient.signOut();
         }
     }
+
+    public static void StartMainActivity(Context context){
+
+        Intent intent = new Intent(context, MainActivity.class);
+
+        String activity = ReadPreference(context, "startActivity");
+        switch (CallbackTypes.valueOf(activity)){
+            case HOME:
+                intent = new Intent(context, MainActivity.class);
+                break;
+            case LOGIN:
+                intent = new Intent(context, LoginActivity.class);
+                break;
+        }
+
+        ((Activity)context).finish();
+        context.startActivity(intent);
+        ((Activity)context).overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+
+
+    }
+
 }

@@ -20,6 +20,7 @@ import java.util.Map;
 
 import pressure.adriano.com.Activities.LoginActivity;
 import pressure.adriano.com.Activities.MainActivity;
+import pressure.adriano.com.Activities.MainLoader;
 import pressure.adriano.com.R;
 
 import static pressure.adriano.com.Activities.LoginActivity.googleSignInClient;
@@ -71,6 +72,7 @@ public class Authorization {
                                 Intent mainIntent = new Intent(context, MainActivity.class);
                                 ((Activity)context).finish();
                                 context.startActivity(mainIntent);
+                                ((Activity)context).overridePendingTransition(R.anim.fadein, R.anim.fadeout);
                             }
                         }
                     }
@@ -120,9 +122,11 @@ public class Authorization {
                             Log.e(logLocation, ex.getMessage());
                         }finally {
                             TryLogout();
-                            Intent mainIntent = new Intent(context, LoginActivity.class);
+                            Intent mainIntent = new Intent(context, MainLoader.class);
                             ((Activity)context).finish();
                             context.startActivity(mainIntent);
+                            ((Activity)context).overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+
                         }
                     }
                 },
