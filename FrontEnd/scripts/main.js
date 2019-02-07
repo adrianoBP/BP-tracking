@@ -72,6 +72,7 @@ function SignOut() {
             },
             error: function() {
                 ShowSnack("Error");
+                location.reload();
             }
         });
     });
@@ -143,14 +144,18 @@ function GetPressureData(){
                 let sysData = [];
                 let diaData = [];
                 let dataLabels = [];
+                let normSys = [];
+                let normDia = [];
 
                 response['Data'].forEach(function(pressureEntry){
                     sysData.unshift(pressureEntry.systole);
                     diaData.unshift(pressureEntry.diastole);
+                    normSys.unshift(120);
+                    normDia.unshift(80);
                     dataLabels.unshift(NormalizeTime(new Date(pressureEntry.createTime)));
                 });
 
-                UpdateChart(sysData, diaData, dataLabels);
+                UpdateChart(sysData, diaData, dataLabels, normSys, normDia);
                 sessionStorage.setItem('lastValsCount', response['Data'].length);
             }
 
@@ -182,8 +187,9 @@ var signinChanged = function (val) {
     }
 };
 
-function UpdateChart(sysVals, diaVals, dataLabels){
+function UpdateChart(sysVals, diaVals, dataLabels, normSys, normDia){
     if(myChart){ myChart.destroy(); }
+    let tmp = [100, 100];
     myChart = new Chart(canvasGraph, {
         type: 'line',
         data: {
@@ -229,7 +235,26 @@ function UpdateChart(sysVals, diaVals, dataLabels){
                     pointRaduis: 2,
                     pointHitRadius: 10,
                     data: sysVals
+                },
+                {
+                    label: "Systolic reference.",
+                    fill: false,
+                    borderColor: "rgba(51,153,51,0.7)",
+                    data: normSys,
+                    pointRadius: 0,
+                    pointHoverRadius: 0,
+                    borderDash: [10,5]
+                },
+                {
+                    label: "Diastolic reference",
+                    fill: false,
+                    borderColor: "rgba(255,102,51,0.7)",
+                    data: normDia,
+                    pointRadius: 0,
+                    pointHoverRadius: 0,
+                    borderDash: [10,5]
                 }
+
             ]
         },
         options: {
@@ -238,7 +263,8 @@ function UpdateChart(sysVals, diaVals, dataLabels){
             scales: {
                 yAxes: [{
                     ticks: {
-                        beginAtZero:true
+                        min: 40,  // minimum value
+                        max: 160 // maximum value
                     }
                 }]
             },
