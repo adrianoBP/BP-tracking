@@ -12,4 +12,6 @@
     <color name="backgroundDark">#424242</color>
     <color name="systolicColor">#b71c1c</color>
     <color name="diastolicColor">#283593</color>
+    <color name="commonGreen">#339933</color>
+    <color name="commonOrange">#ff6633</color>
 </resources>

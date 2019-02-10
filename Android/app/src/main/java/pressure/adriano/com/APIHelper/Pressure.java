@@ -106,7 +106,6 @@ public class Pressure {
 
         Map<String, String> data = new HashMap<>();
         data.put("token", ReadPreference(context, "authorizationToken"));
-
         JsonObjectRequest getDataRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
                 new Response.Listener<JSONObject>() {
                     @Override

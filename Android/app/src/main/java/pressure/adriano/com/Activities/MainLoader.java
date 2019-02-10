@@ -26,8 +26,6 @@ public class MainLoader extends AppCompatActivity {
         setContentView(R.layout.activity_main_loader);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 
-        // TODO: Start loading animatino
-
         // Link items
         avMainLoader = findViewById(R.id.avMainLoader);
 

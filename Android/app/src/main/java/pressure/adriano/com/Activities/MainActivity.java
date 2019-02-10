@@ -22,7 +22,6 @@ import static pressure.adriano.com.APIHelper.Authorization.Logout;
 
 public class MainActivity extends AppCompatActivity {
 
-    // TODO: Google auth / session
     // TODO: language pack (from Bituci)
     // TODO: Graph filter + select date range
 

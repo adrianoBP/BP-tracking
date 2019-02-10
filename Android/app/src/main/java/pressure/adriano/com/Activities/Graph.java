@@ -2,6 +2,9 @@ package pressure.adriano.com.Activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.PathDashPathEffect;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -51,16 +54,20 @@ public class Graph extends AppCompatActivity {
         @SuppressLint("SimpleDateFormat") final DateFormat viewDatetimeFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
         LineChartView lineChart = view.findViewById(R.id.chart);
-        List<PointValue> systoleData = new ArrayList<>();
-        List<PointValue> diastoleData = new ArrayList<>();
+        List<PointValue> systolicData = new ArrayList<>();
+        List<PointValue> diastolicData = new ArrayList<>();
+        List<PointValue> systolicReferenceData = new ArrayList<>();
+        List<PointValue> diastolicReferenceData = new ArrayList<>();
         List<AxisValue> axisXs = new ArrayList<>();
         List<AxisValue> axisYs = new ArrayList<>();
 
         int counter = 0;
         for (PressureEntry pe:
-             pressureEntries) {
-            systoleData.add(new PointValue(counter, pe.getSystole()));
-            diastoleData.add(new PointValue(counter, pe.getDiastole()));
+            pressureEntries) {
+            systolicData.add(new PointValue(counter, pe.getSystole()));
+            diastolicData.add(new PointValue(counter, pe.getDiastole()));
+            systolicReferenceData.add(new PointValue(counter, 120));
+            diastolicReferenceData.add(new PointValue(counter, 80));
             axisXs.add(new AxisValue(counter).setLabel(""));
             counter++;
         }
@@ -69,9 +76,22 @@ public class Graph extends AppCompatActivity {
             axisYs.add(new AxisValue(i));
         }
 
-        Line systolic = new Line(systoleData).setColor(context.getResources().getColor(R.color.systolicColor)).setCubic(true);
-        Line diastolic = new Line(diastoleData).setColor(context.getResources().getColor(R.color.diastolicColor)).setCubic(true);
+        Line systolic = new Line(systolicData).setColor(context.getResources().getColor(R.color.systolicColor)).setCubic(true);
+        Line diastolic = new Line(diastolicData).setColor(context.getResources().getColor(R.color.diastolicColor)).setCubic(true);
+        Line systolicReference = new Line(systolicReferenceData).setColor(context.getResources().getColor(R.color.commonGreen)).setCubic(true);
+        Line diastolicReference = new Line(diastolicReferenceData).setColor(context.getResources().getColor(R.color.commonOrange)).setCubic(true);
+
+        systolicReference.setHasPoints(false);
+        systolicReference.setPathEffect(new DashPathEffect(new float[]{10, 20},00f));
+        systolicReference.setStrokeWidth(2);
+        diastolicReference.setHasPoints(false);
+        diastolicReference.setPathEffect(new DashPathEffect(new float[]{10, 20},0f));
+        diastolicReference.setStrokeWidth(2);
+
+
         List<Line> lines = new ArrayList<>();
+        lines.add(systolicReference);
+        lines.add(diastolicReference);
         lines.add(systolic);
         lines.add(diastolic);
 
@@ -102,9 +122,9 @@ public class Graph extends AppCompatActivity {
             @Override
             public void onValueSelected(int i, int i1, PointValue pointValue) {
                 if(i == 0){
-                    CreateBasicSnack("Systolic - " + String.valueOf(pressureEntries.get(i1).getSystole()) + " at " + viewDatetimeFormat.format(pressureEntries.get(i1).getCreateTime()) + " " + pressureEntries.get(i).getBpm() + " at BPM", 5000, context);
+                    CreateBasicSnack("Systolic - " + String.valueOf(pressureEntries.get(i1).getSystole()) + " at " + viewDatetimeFormat.format(pressureEntries.get(i1).getCreateTime()) + " at " + pressureEntries.get(i1).getBpm() + " BPM", 5000, context);
                 }else{
-                    CreateBasicSnack("Diastolic - " + String.valueOf(pressureEntries.get(i1).getDiastole()) + " at " + viewDatetimeFormat.format(pressureEntries.get(i1).getCreateTime()) + " " + pressureEntries.get(i).getBpm() + " at BPM", 5000, context);
+                    CreateBasicSnack("Diastolic - " + String.valueOf(pressureEntries.get(i1).getDiastole()) + " at " + viewDatetimeFormat.format(pressureEntries.get(i1).getCreateTime()) + " at " + pressureEntries.get(i1).getBpm() + " BPM", 5000, context);
                 }
             }
 
