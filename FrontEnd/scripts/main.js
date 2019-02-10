@@ -146,16 +146,24 @@ function GetPressureData(){
                 let dataLabels = [];
                 let normSys = [];
                 let normDia = [];
+                let sysMax = [];
+                let sysMin = [];
+                let diaMax = [];
+                let diaMin = [];
 
                 response['Data'].forEach(function(pressureEntry){
                     sysData.unshift(pressureEntry.systole);
                     diaData.unshift(pressureEntry.diastole);
                     normSys.unshift(120);
                     normDia.unshift(80);
+                    sysMax.unshift(140);
+                    sysMin.unshift(100);
+                    diaMax.unshift(90);
+                    diaMin.unshift(60);
                     dataLabels.unshift(NormalizeTime(new Date(pressureEntry.createTime)));
                 });
 
-                UpdateChart(sysData, diaData, dataLabels, normSys, normDia);
+                UpdateChart(sysData, diaData, dataLabels, normSys, normDia, sysMax, sysMin, diaMax, diaMin);
                 sessionStorage.setItem('lastValsCount', response['Data'].length);
             }
 
@@ -186,93 +194,3 @@ var signinChanged = function (val) {
         ShowSnack("LOGGED OUT.");
     }
 };
-
-function UpdateChart(sysVals, diaVals, dataLabels, normSys, normDia){
-    if(myChart){ myChart.destroy(); }
-    let tmp = [100, 100];
-    myChart = new Chart(canvasGraph, {
-        type: 'line',
-        data: {
-            labels: dataLabels,
-            datasets: [
-                {
-                    label: "Diastolic",
-                    fill: false,
-                    backgroundColor: "rgba(40, 53, 147, 0.22)",
-                    bezierCurve : true,
-                    borderColor: "#283593",
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    boderDashOffset: 0.0,
-                    borderJoinStyle: 'miter',
-                    pointBorderColor: "#283593",
-                    pointBackgroundColor: "#fff",
-                    pointBorderWidth: 2,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: "#283593",
-                    pointHoverBorderColor: "#fff",
-                    pointHoverBorderWidth: 2,
-                    pointRaduis: 2,
-                    pointHitRadius: 10,
-                    data: diaVals
-                },
-                {
-                    label: "Systolic",
-                    fill: false, // Change to "-1" in order to fill between lines, change to "start" fill to the axis
-                    backgroundColor: "rgba(119, 119, 119, 0.30)",
-                    borderColor: "#b71c1c",
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    boderDashOffset: 0.0,
-                    borderJoinStyle: 'miter',
-                    pointBorderColor: "#b71c1c",
-                    pointBackgroundColor: "#fff",
-                    pointBorderWidth: 2,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: "#b71c1c",
-                    pointHoverBorderColor: "#fff",
-                    pointHoverBorderWidth: 2,
-                    pointRaduis: 2,
-                    pointHitRadius: 10,
-                    data: sysVals
-                },
-                {
-                    label: "Systolic reference.",
-                    fill: false,
-                    borderColor: "rgba(51,153,51,0.7)",
-                    data: normSys,
-                    pointRadius: 0,
-                    pointHoverRadius: 0,
-                    borderDash: [10,5]
-                },
-                {
-                    label: "Diastolic reference",
-                    fill: false,
-                    borderColor: "rgba(255,102,51,0.7)",
-                    data: normDia,
-                    pointRadius: 0,
-                    pointHoverRadius: 0,
-                    borderDash: [10,5]
-                }
-
-            ]
-        },
-        options: {
-            maintainAspectRatio: false,
-            spanGaps: false,
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        min: 40,  // minimum value
-                        max: 160 // maximum value
-                    }
-                }]
-            },
-            plugins: {
-                filler: {
-                    propagate: false
-                }
-            }
-        }
-    })
-}
