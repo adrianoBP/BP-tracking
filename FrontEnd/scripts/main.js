@@ -96,7 +96,7 @@ function AttachSignin(element) {
                 var profile = googleUser.getBasicProfile();
                     GoogleAuthentication(profile.getId());
             }, function(error) {
-                alert(JSON.stringify(error, undefined, 2));
+                console.log(error);
             }
         );
     }else{
@@ -116,7 +116,7 @@ function GoogleAuthentication(googleId){
         success: function(response) {
             if (!response["Error"]) {
                 WriteCookie("authorizationToken", response["token"]);
-                ShowSnack("Authenticated via Google!");
+                // ShowSnack("Authenticated via Google!");
                 GoogleInit();
                 UILogin();
                 GetPressureData();
@@ -150,10 +150,12 @@ function GetPressureData(){
                 let sysMin = [];
                 let diaMax = [];
                 let diaMin = [];
+                let bpm = [];
 
                 response['Data'].forEach(function(pressureEntry){
                     sysData.unshift(pressureEntry.systole);
                     diaData.unshift(pressureEntry.diastole);
+                    bpm.unshift(pressureEntry.bpm);
                     normSys.unshift(120);
                     normDia.unshift(80);
                     sysMax.unshift(140);
@@ -163,7 +165,7 @@ function GetPressureData(){
                     dataLabels.unshift(NormalizeTime(new Date(pressureEntry.createTime)));
                 });
 
-                UpdateChart(sysData, diaData, dataLabels, normSys, normDia, sysMax, sysMin, diaMax, diaMin);
+                UpdateChart(sysData, diaData, bpm, dataLabels, normSys, normDia, sysMax, sysMin, diaMax, diaMin);
                 sessionStorage.setItem('lastValsCount', response['Data'].length);
             }
 
@@ -191,6 +193,6 @@ function GoogleInit(){
 
 var signinChanged = function (val) {
     if(!val){
-        ShowSnack("LOGGED OUT.");
+        // ShowSnack("LOGGED OUT.");
     }
 };

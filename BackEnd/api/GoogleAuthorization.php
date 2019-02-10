@@ -29,7 +29,7 @@ if(sizeof($request) == 0){
     if($statement->execute()){
         $statement->store_result();
         if($statement->num_rows != 1){
-            $response["Error"] = "Unable to retrieve the correct user.";
+            $response["Error"] = "Unable to retrieve the user information.";
         }else{
             $statement->bind_result($userId);
             $statement->fetch();

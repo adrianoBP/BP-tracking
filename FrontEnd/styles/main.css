@@ -3,7 +3,7 @@
   src: url(https://Projectsherlock.ddns.net/Util/fonts/gothic.woff);
 }
 
-body{
+html, body{
     margin: 0px;
     background-color: #424242;
     font-family: title;
@@ -17,6 +17,11 @@ body{
     margin-top: 2%;
 }
 
+#dLogout{
+    margin: 0;
+    width: 100%;
+    height: 52px;
+}
 .mainCanvas{
     background-color: #EEEEEE;
 }
@@ -64,6 +69,20 @@ body{
   to {bottom: 0; opacity: 0;}
 }
 
+#dGoogle{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+}
+
+#bLogout{
+    float: right;
+    margin-top: 16px;
+    margin-right: 16px;
+}
+
 /* Button */
 .pure-material-button-contained {
     position: relative;
@@ -96,6 +115,7 @@ body{
 }
 
 /* Overlay */
+
 .pure-material-button-contained::before {
     content: "";
     position: absolute;

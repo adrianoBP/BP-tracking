@@ -11,8 +11,8 @@ function UILogin(){
 }
 
 function UILogout(){
-    bGoogle.classList.remove("invisible");
     bLogout.className += " invisible";
+    bGoogle.className += " invisible";
 }
 
 function ShowSnack(message) {
@@ -27,7 +27,7 @@ function ShowSnack(message) {
     }
 }
 
-function UpdateChart(sysVals, diaVals, dataLabels, normSys, normDia, sysMax, sysMin, diaMax, diaMin){
+function UpdateChart(sysVals, diaVals, bpm, dataLabels, normSys, normDia, sysMax, sysMin, diaMax, diaMin){
     if(myChart){ myChart.destroy(); }
     let tmp = [100, 100];
     myChart = new Chart(canvasGraph, {
@@ -133,6 +133,15 @@ function UpdateChart(sysVals, diaVals, dataLabels, normSys, normDia, sysMax, sys
                     pointRadius: 0,
                     pointHoverRadius: 0,
                     borderDash: [10,5]
+                }
+                ,
+                {
+                    label: "Diastolic reference",
+                    fill: false,
+                    data: bpm,
+                    pointRadius: 0,
+                    pointHoverRadius: 0,
+                    borderWidth: 1
                 }
 
             ]
