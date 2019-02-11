@@ -58,6 +58,7 @@ public class Graph extends AppCompatActivity {
         List<PointValue> diastolicData = new ArrayList<>();
         List<PointValue> systolicReferenceData = new ArrayList<>();
         List<PointValue> diastolicReferenceData = new ArrayList<>();
+        List<PointValue> bpmData = new ArrayList<>();
         List<AxisValue> axisXs = new ArrayList<>();
         List<AxisValue> axisYs = new ArrayList<>();
 
@@ -68,6 +69,7 @@ public class Graph extends AppCompatActivity {
             diastolicData.add(new PointValue(counter, pe.getDiastole()));
             systolicReferenceData.add(new PointValue(counter, 120));
             diastolicReferenceData.add(new PointValue(counter, 80));
+            bpmData.add(new PointValue(counter, pe.getBpm()));
             axisXs.add(new AxisValue(counter).setLabel(""));
             counter++;
         }
@@ -80,18 +82,22 @@ public class Graph extends AppCompatActivity {
         Line diastolic = new Line(diastolicData).setColor(context.getResources().getColor(R.color.diastolicColor)).setCubic(true);
         Line systolicReference = new Line(systolicReferenceData).setColor(context.getResources().getColor(R.color.commonGreen)).setCubic(true);
         Line diastolicReference = new Line(diastolicReferenceData).setColor(context.getResources().getColor(R.color.commonOrange)).setCubic(true);
+        Line bpm = new Line(bpmData).setColor(context.getResources().getColor(R.color.commonGreyLight)).setCubic(true);
 
         systolicReference.setHasPoints(false);
-        systolicReference.setPathEffect(new DashPathEffect(new float[]{10, 20},00f));
+        systolicReference.setPathEffect(new DashPathEffect(new float[]{10, 20},0f));
         systolicReference.setStrokeWidth(2);
         diastolicReference.setHasPoints(false);
         diastolicReference.setPathEffect(new DashPathEffect(new float[]{10, 20},0f));
         diastolicReference.setStrokeWidth(2);
+        bpm.setHasPoints(false);
+        bpm.setStrokeWidth(1);
 
 
         List<Line> lines = new ArrayList<>();
         lines.add(systolicReference);
         lines.add(diastolicReference);
+        lines.add(bpm);
         lines.add(systolic);
         lines.add(diastolic);
 
@@ -121,9 +127,9 @@ public class Graph extends AppCompatActivity {
         lineChart.setOnValueTouchListener(new LineChartOnValueSelectListener() {
             @Override
             public void onValueSelected(int i, int i1, PointValue pointValue) {
-                if(i == 0){
+                if(i == 3){
                     CreateBasicSnack("Systolic - " + String.valueOf(pressureEntries.get(i1).getSystole()) + " at " + viewDatetimeFormat.format(pressureEntries.get(i1).getCreateTime()) + " at " + pressureEntries.get(i1).getBpm() + " BPM", 5000, context);
-                }else{
+                }else if(i == 4){
                     CreateBasicSnack("Diastolic - " + String.valueOf(pressureEntries.get(i1).getDiastole()) + " at " + viewDatetimeFormat.format(pressureEntries.get(i1).getCreateTime()) + " at " + pressureEntries.get(i1).getBpm() + " BPM", 5000, context);
                 }
             }
